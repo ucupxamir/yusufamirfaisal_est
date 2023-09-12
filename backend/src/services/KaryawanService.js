@@ -1,5 +1,6 @@
 const { sequelize } = require("../models");
 const KaryawanRepository = require("../repositories/KaryawanRepository");
+const kodeDivisi = require("./DivisionCode");
 
 class KaryawanService {
 
@@ -14,14 +15,7 @@ class KaryawanService {
                 nomorUrut = (nomorUrutTerakhir + 1).toString().padStart(4, "0");
             }
 
-            let kode_divisi;
-            if (request.divisi == "IT") {
-                kode_divisi = "10"
-            } else if (request.divisi == "HRD") {
-                kode_divisi = "11"
-            } else if (request.divisi == "FINANCE") {
-                kode_divisi = "12"
-            }
+            const kode_divisi = kodeDivisi(request.divisi);
 
             const currentYear = new Date().getFullYear().toString().slice(-2);
 
@@ -46,7 +40,7 @@ class KaryawanService {
         }
     }
 
-    async update(nik, karyawanRequest) {
+    async update(nik, request) {
         let t = await sequelize.transaction();
         try {
             const existingKaryawan = await KaryawanRepository.findByNik(nik, { transaction: t });
@@ -55,7 +49,23 @@ class KaryawanService {
                 throw new Error("karyawan dengan NIK " + nik + " tidak ditemukan.");
             }
 
-            await KaryawanRepository.update(nik, karyawanRequest, { transaction: t });
+            if (existingKaryawan.divisi !== request.divisi) {
+                const karyawanTerakhir = await KaryawanRepository.findByDivisi(request.divisi, { transaction: t });
+
+                let nomorUrut = "0001";
+                if (karyawanTerakhir) {
+                    const nomorUrutTerakhir = parseInt(karyawanTerakhir.nik.slice(-4));
+                    nomorUrut = (nomorUrutTerakhir + 1).toString().padStart(4, "0");
+                }
+
+                const kode_divisi = kodeDivisi(request.divisi);
+
+                const currentYear = new Date().getFullYear().toString().slice(-2);
+    
+                request.nik = kode_divisi + currentYear + nomorUrut;
+            }
+
+            await KaryawanRepository.update(nik, request, { transaction: t });
             await t.commit();
         } catch (error) {
             await t.rollback();
