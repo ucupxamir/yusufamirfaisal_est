@@ -1,0 +1,21 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model Karyawan {
+  nik           String      @id               @db.VarChar(8)
+  nama          String      @db.VarChar(100)
+  alamat        String      @db.Text()
+  tgllahir      DateTime
+  divisi        String      @db.VarChar(20)
+  status        String      @db.VarChar(20)
+  created_date  DateTime    @default(now())
+}

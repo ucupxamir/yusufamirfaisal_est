@@ -46,7 +46,7 @@ class KaryawanService {
             const existingKaryawan = await KaryawanRepository.findByNik(nik, { transaction: t });
 
             if (!existingKaryawan) {
-                throw new Error("karyawan dengan NIK " + nik + " tidak ditemukan.");
+                throw new Error(404, "karyawan dengan NIK " + nik + " tidak ditemukan.");
             }
 
             if (existingKaryawan.divisi !== request.divisi) {
