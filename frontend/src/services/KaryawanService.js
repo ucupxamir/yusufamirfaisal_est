@@ -4,11 +4,11 @@ const KARYAWAN_API_ENDPOINT = "http://localhost:4000/api/karyawan";
 
 class KaryawanService {
 
-    create(data) {
+    register(data) {
         return axios.post(KARYAWAN_API_ENDPOINT, data);
     }
 
-    findAll() {
+    get() {
         return axios.get(KARYAWAN_API_ENDPOINT);
     }
 
@@ -16,7 +16,7 @@ class KaryawanService {
         return axios.post(KARYAWAN_API_ENDPOINT + "/" + nik, data);
     }
 
-    destroy(nik) {
+    remove(nik) {
         return axios.delete(KARYAWAN_API_ENDPOINT + "/" + nik)
     }
 }

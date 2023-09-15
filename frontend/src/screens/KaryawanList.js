@@ -104,8 +104,8 @@ const KaryawanList = () => {
 
     const createKaryawan = async (data) => {
         try {
-            await KaryawanService.create(data);
-            findAll();
+            await KaryawanService.register(data);
+            get();
         } catch (error) {
             console.error(error);
         }
@@ -115,7 +115,7 @@ const KaryawanList = () => {
     const updateKaryawan = async (data) => {
         try {
             await KaryawanService.update(nik, data);
-            findAll();
+            get();
         } catch (error) {
             console.error(error);
         }
@@ -123,17 +123,17 @@ const KaryawanList = () => {
     }
 
     const handleDelete = async (row) => {
-        await KaryawanService.destroy(row.nik);
-        findAll();
+        await KaryawanService.remove(row.nik);
+        get();
     };
 
     React.useEffect(() => {
-        findAll();
+        get();
     }, []);
 
-    const findAll = async () => {
+    const get = async () => {
         try {
-            const res = await KaryawanService.findAll();
+            const res = await KaryawanService.get();
             setKaryawans(res.data.data);
         } catch (error) {
             console.error(error);
